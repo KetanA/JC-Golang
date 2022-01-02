@@ -74,10 +74,8 @@ func CreatePasswordStore() chan<- Command {
 					r.responseChannel <- "Invalid hash id!"
 				}
 			case SetHashCommand:
-				// time.Sleep(500 * time.Millisecond)
 				secretStore[r.id] = r.password
 				totalTime += time.Now().UnixMicro() - r.requestStartTs
-				// log.Printf("totalTime: %d", totalTime) remove
 			case GetCountCommand:
 				counter++
 				r.responseChannel <- strconv.Itoa(counter)
