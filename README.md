@@ -19,7 +19,7 @@ First, run the server from terminal using above command.  Curl, ab can be used t
 curl -X POST localhost:8090/hash -d password="myPassword"
 ```
 or, create a `postdata` file with content: `password=abcdefg`, then run:
-
+```
 ab -n 100 -c 10 -v 4 -T application/x-www-form-urlencoded -p ./postdata http://localhost:8090/hash
 ```
 
