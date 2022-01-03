@@ -16,26 +16,26 @@ First, run the server from terminal using above command.  Curl, ab can be used t
 
 ### /hash call (Must be POST)
 ```
-curl -X POST localhost:8090/hash -d password="myPassword"
+curl -X POST localhost:8080/hash -d password="myPassword"
 ```
 or, create a `postdata` file with content: `password=abcdefg`, then run:
 ```
-ab -n 100 -c 10 -v 4 -T application/x-www-form-urlencoded -p ./postdata http://localhost:8090/hash
+ab -n 100 -c 10 -v 4 -T application/x-www-form-urlencoded -p ./postdata http://localhost:8080/hash
 ```
 
 ### /hash/{id} call
 ```
-curl localhost:8090/hash/1
+curl localhost:8080/hash/1
 ```
 
 ### /stats call (Must be GET)
 ```
-curl -X GET localhost:8090/stats
+curl -X GET localhost:8080/stats
 ```
 
 ### /shutdown call
 ```
-curl localhost:8090/shutdown
+curl localhost:8080/shutdown
 ```
 
 
@@ -47,6 +47,7 @@ curl localhost:8090/shutdown
 This can be changed using **'ChannelCapacity'** config.
 * /stats endpoint returns the total number of requests and average time in **microseconds** required to process each request.
 * /shutdown endpoint does a graceful shutdown, waits for **'PreprocessingDelay'** for any pending requests.
+* By default, the server runs on port **8080**. This can be changed using **DefaultPort** config.
 
 
 Cheers!

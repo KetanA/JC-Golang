@@ -27,6 +27,8 @@ const (
 	ChannelCapacity = 200
 	// PreprocessingDelay is the wait time before processing the inbound request.
 	PreprocessingDelay = 5
+	// DefaultPort on which the server listens.
+	DefaultPort = ":8080"
 )
 
 // Command struct holds the request data.
@@ -57,7 +59,7 @@ type Stats struct {
 func CreatePasswordStore() chan<- Command {
 	// secretStore is in-memory datastore for storing hashed-encoded passwords.
 	secretStore := make(map[int]string)
-	// counter maintains total number of '/hash' requests received by the server
+	// counter maintains total number of '/hash' requests received by the server.
 	counter := 0
 	// inboundRequests creates a buffered-channel to handle inbound requests to the server.
 	inboundRequests := make(chan Command, ChannelCapacity)
@@ -200,10 +202,10 @@ func (s *Server) shutdownHandler(w http.ResponseWriter, r *http.Request) {
 	}()
 }
 
-var setHashRegex = regexp.MustCompile(`/hash$`)      // to match `/hash` endpoint
-var getHashRegex = regexp.MustCompile(`/hash/\d`)    // to match `/hash/{id}` endpoint
-var statsRegex = regexp.MustCompile(`/stats$`)       // to match `/stats` endpoint
-var shutdownRegex = regexp.MustCompile(`/shutdown$`) // to match `/shutdown` endpoint
+var setHashRegex = regexp.MustCompile(`/hash$`)      // to match `/hash` endpoint.
+var getHashRegex = regexp.MustCompile(`/hash/\d`)    // to match `/hash/{id}` endpoint.
+var statsRegex = regexp.MustCompile(`/stats$`)       // to match `/stats` endpoint.
+var shutdownRegex = regexp.MustCompile(`/shutdown$`) // to match `/shutdown` endpoint.
 
 // MatchHandlers matches endpoints to their handlers.
 func (s *Server) matchHandlers(w http.ResponseWriter, r *http.Request) {
@@ -225,5 +227,5 @@ func (s *Server) matchHandlers(w http.ResponseWriter, r *http.Request) {
 func main() {
 	server := &Server{inboundRequests: CreatePasswordStore()}
 	http.HandleFunc("/", server.matchHandlers)
-	http.ListenAndServe(":8090", nil)
+	http.ListenAndServe(DefaultPort, nil)
 }
