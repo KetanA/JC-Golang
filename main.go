@@ -119,6 +119,7 @@ func (s *Server) getHashHandler(w http.ResponseWriter, r *http.Request) {
 	s.inboundRequests <- Command{requestType: GetHashCommand, id: hashId, responseChannel: resChan}
 	log.Println("Hash retrieved for id: ", id)
 	fmt.Fprintf(w, "%s\n", <-resChan)
+	close(resChan)
 }
 
 // setHashHandler handles the POST requests to `/hash` endpoint.
@@ -142,6 +143,7 @@ func (s *Server) setHashHandler(w http.ResponseWriter, r *http.Request) {
 	s.inboundRequests <- Command{requestType: GetCountCommand, password: "", id: 0, responseChannel: resChan}
 	id, _ := strconv.Atoi(<-resChan)
 	fmt.Fprintf(w, "%d\n", id)
+	close(resChan)
 
 	// Push the request to inboundRequests after 5 sec.
 	c := &Command{requestType: SetHashCommand, password: password, id: id}
@@ -176,6 +178,7 @@ func (s *Server) statsHandler(w http.ResponseWriter, r *http.Request) {
 	s.inboundRequests <- Command{requestType: GetStatsCommand, responseChannel: resChan}
 	resp := <-resChan
 	fmt.Fprintf(w, "%s\n", resp)
+	close(resChan)
 }
 
 // shutdownHandler handles the `/shutdown` endpoint.
@@ -191,6 +194,8 @@ func (s *Server) shutdownHandler(w http.ResponseWriter, r *http.Request) {
 			log.Printf("Pending inboundRequests: %d", len(s.inboundRequests))
 			log.Printf("Waiting for pending requests to finish...")
 		}
+		// close channel
+		close(s.inboundRequests)
 		os.Exit(0)
 	}()
 }
